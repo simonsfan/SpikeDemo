@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spike.demo.mapper.ProductMapper">
+    <resultMap id="BaseResultMap" type="com.spike.demo.bean.Product">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="product_stock" property="productStock" jdbcType="INTEGER"/>
+        <result column="product_sold" property="productSold" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, product_name, product_stock, product_sold, create_time, update_time, version
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.spike.demo.bean.Product">
+    insert into product (id, product_name, product_stock, 
+      product_sold, create_time, update_time, 
+      version)
+    values (#{id,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{productStock,jdbcType=INTEGER}, 
+      #{productSold,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{version,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.spike.demo.bean.Product">
+        insert into product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="productStock != null">
+                product_stock,
+            </if>
+            <if test="productSold != null">
+                product_sold,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="productStock != null">
+                #{productStock,jdbcType=INTEGER},
+            </if>
+            <if test="productSold != null">
+                #{productSold,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                now(),
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.spike.demo.bean.Product">
+        update product
+        <set>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="productStock != null">
+                product_stock = #{productStock,jdbcType=INTEGER},
+            </if>
+            <if test="productSold != null">
+                product_sold = #{productSold,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER},
+            </if>
+            update_time = now()
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.spike.demo.bean.Product">
+    update product
+    set product_name = #{productName,jdbcType=VARCHAR},
+      product_stock = #{productStock,jdbcType=INTEGER},
+      product_sold = #{productSold,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now(),
+      version = #{version,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <update id="updateStock" parameterType="java.lang.Integer">
+           update product set product_stock=product_stock-1,product_sold=product_sold+1,update_time=now() where id = #{id}
+    </update>
+
+    <update id="updateStockVersion" parameterType="com.spike.demo.bean.Product">
+           update product set product_stock=product_stock-1,product_sold=product_sold+1,update_time=now(),version=version+1 where id = #{id} and version = #{version}
+    </update>
+
+</mapper>
