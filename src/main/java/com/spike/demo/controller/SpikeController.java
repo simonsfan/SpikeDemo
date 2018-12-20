@@ -3,6 +3,7 @@ package com.spike.demo.controller;
 import com.spike.demo.annotation.AccessLimit;
 import com.spike.demo.bean.Product;
 import com.spike.demo.service.SpikeService;
+import com.spike.demo.util.ResultEnum;
 import com.spike.demo.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,19 +28,24 @@ public class SpikeController {
     @Autowired
     private SpikeService spikeService;
 
-    @AccessLimit(time = 1,threshold = 5)
+    @AccessLimit(time = 1, threshold = 5)
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/spike")
     public String spike(@RequestParam(value = "id", required = false) String id,
-                               @RequestParam(value = "username", required = false) String userName) {
+                        @RequestParam(value = "username", required = false) String userName) {
         log.info("/spike params:id={},username={}", id, userName);
-        if (StringUtils.isEmpty(id)) {
-            return ResultUtil.fail();
-        }
-        Integer productId = Integer.valueOf(id);
         Product product = new Product();
-        product.setId(productId);
-        return spikeService.spike(product,userName);
+        try {
+            if (StringUtils.isEmpty(id)) {
+                return ResultUtil.fail();
+            }
+            Integer productId = Integer.valueOf(id);
+            product.setId(productId);
+        } catch (Exception e) {
+            log.error("spike fail username={},e={}", userName, e.toString());
+            return ResultUtil.success(ResultEnum.SPIKEFAIL.getCode(), ResultEnum.SPIKEFAIL.getMessage());
+        }
+        return spikeService.spike(product, userName);
     }
 
 }
