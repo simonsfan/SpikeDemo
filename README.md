@@ -1,5 +1,4 @@
 ![](https://img.shields.io/badge/秒杀功能总结-green.svg?logo=appveyor&style=for-the-badge) 
-![](https://img.shields.io/badge/联系QQ-1185304036-green.svg?logo=appveyor&style=for-the-badge) 
 > ##  主要内容
 > *   秒杀场景简述及分析
 > *   使用乐观锁控制库存数量
